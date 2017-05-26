@@ -12,11 +12,11 @@ suite('basic-query-transform-test', () => {
     assert.equal(builderCode, expectedBuilderCode);
   });
 
-  test.skip('it can transform a basic query with a custom identifier name', () => {
+  test('it can transform a basic query with custom identifiers', () => {
     const query = getFixture('basic-query.graphql');
-    const expectedBuilderCode = getFixture('basic-query.js').replace(/client/, 'ultraClient');
+    const expectedBuilderCode = getFixture('basic-query-with-custom-var.js');
 
-    const builderCode = transform(query, 'ultraClient');
+    const builderCode = transform(query, 'fancyClient', 'someOtherDocument');
 
     assert.equal(builderCode, expectedBuilderCode);
   });

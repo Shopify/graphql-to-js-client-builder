@@ -39,7 +39,7 @@ function applyArguments(options, selection, clientVar) {
     return parseArg(argument, clientVar);
   });
 
-  options.push(t.objectProperty(t.identifier('selectionConstructionArgs'), t.objectExpression(fieldArguments)));
+  options.push(t.objectProperty(t.identifier('args'), t.objectExpression(fieldArguments)));
 }
 
 // Returns the body of the block statement representing the selections
@@ -65,7 +65,7 @@ export default function getSelections(selectionSet, parentSelectionName, spreads
           getSelections(selection.selectionSet, fieldNameOrTypeConstraint, spreadsVar, clientVar)
         )
       ));
-   }
+    }
 
     return t.expressionStatement(
       t.callExpression(

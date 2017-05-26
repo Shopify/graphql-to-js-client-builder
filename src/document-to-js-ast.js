@@ -14,21 +14,34 @@ function insertSpreadVar(nodes, identifier) {
   ]));
 }
 
+function declareDocument(nodes, clientVar, documentVar) {
+  nodes.push(t.variableDeclaration('const', [
+    t.variableDeclarator(documentVar,
+      t.callExpression(
+        t.memberExpression(clientVar, t.identifier('document')),
+        []
+      )
+    )
+  ]));
+}
+
 export default function documentToJSAst(graphQLAst, clientVar, documentVar, spreadsVar) {
   const jsGraphQLNodes = [];
+
+  declareDocument(jsGraphQLNodes, clientVar, documentVar);
+
   const sortedgraphQLAst = Object.assign(
     {},
     graphQLAst,
     {definitions: sortDefinitions(graphQLAst.definitions)}
   );
-
   const fragmentDefinitons = extractFragmentDefinitons(sortedgraphQLAst.definitions);
 
   if (fragmentDefinitons.length) {
     insertSpreadVar(jsGraphQLNodes, spreadsVar);
   }
 
-  visit(graphQLAst, {
+  visit(sortedgraphQLAst, {
     FragmentDefinition: fragmentVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar),
     OperationDefinition: operationVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar)
   });

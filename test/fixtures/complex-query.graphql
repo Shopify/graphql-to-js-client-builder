@@ -1,0 +1,20 @@
+query MyQuery {
+  shop {
+    ...ShopFragment
+  }
+}
+
+fragment ShopFragment on Shop {
+  shopName: name
+  products(first: 10) {
+    edges {
+      node {
+        ...ProductFragment
+      }
+    }
+  }
+}
+
+fragment ProductFragment on Product {
+  title
+}
