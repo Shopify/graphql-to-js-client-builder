@@ -1,5 +1,5 @@
 import * as t from 'babel-types';
-import parseArgValue from './arg-value-to-js';
+import argValueToJS from './arg-value-to-js';
 
 function extractVariableType(variableAst) {
   switch (variableAst.kind) {
@@ -15,7 +15,7 @@ function extractVariableType(variableAst) {
 
 function assignDefaultValue(variableConstructionArgs, variableAst, clientVar) {
   if (variableAst.defaultValue) {
-    variableConstructionArgs.push(parseArgValue(variableAst.defaultValue, clientVar));
+    variableConstructionArgs.push(argValueToJS(variableAst.defaultValue, clientVar));
   }
 }
 
