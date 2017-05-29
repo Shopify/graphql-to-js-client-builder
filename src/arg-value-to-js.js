@@ -1,6 +1,6 @@
 import * as t from 'babel-types';
 
-export default function parseArgValue(argumentValue, clientVar) {
+export default function argValueToJS(argumentValue, clientVar) {
   switch (argumentValue.kind) {
     case 'StringValue':
       return t.stringLiteral(argumentValue.value);

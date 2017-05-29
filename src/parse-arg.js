@@ -1,5 +1,5 @@
 import * as t from 'babel-types';
-import parseArgValue from './parse-arg-value';
+import parseArgValue from './arg-value-to-js';
 
 export default function parseArg(argument, clientVar) {
   const argumentVar = t.identifier(argument.name.value);
