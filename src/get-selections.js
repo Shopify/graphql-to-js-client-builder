@@ -35,11 +35,7 @@ function applyArguments(options, selection, clientVar) {
     return;
   }
 
-  const fieldArguments = selection.arguments.map((argument) => {
-    return parseArg(argument, clientVar);
-  });
-
-  options.push(t.objectProperty(t.identifier('args'), t.objectExpression(fieldArguments)));
+  options.push(parseArg(t.identifier('args'), selection.arguments, clientVar));
 }
 
 // Returns the body of the block statement representing the selections
