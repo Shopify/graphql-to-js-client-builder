@@ -16,10 +16,10 @@ export default function argValueToJS(argumentValue, clientVar) {
     case 'BooleanValue':
       return t.booleanLiteral(argumentValue.value);
     case 'ListValue':
-      return t.arrayExpression(argumentValue.values.map((value) => argValueToJS(value)));
+      return t.arrayExpression(argumentValue.values.map((value) => argValueToJS(value, clientVar)));
     case 'ObjectValue':
       return t.objectExpression(argumentValue.fields.map((field) => {
-        return t.objectProperty(t.identifier(field.name.value), argValueToJS(field.value));
+        return t.objectProperty(t.identifier(field.name.value), argValueToJS(field.value, clientVar));
       }));
     case 'Variable':
       return t.callExpression(
