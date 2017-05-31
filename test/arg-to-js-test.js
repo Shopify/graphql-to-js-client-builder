@@ -2,7 +2,7 @@ import assert from 'assert';
 import {parse} from 'graphql/language';
 import generate from 'babel-generator';
 import * as t from 'babel-types';
-import argToJS from '../src/parse-arg';
+import argToJS from '../src/arg-to-js';
 
 suite('arg-to-js', () => {
 

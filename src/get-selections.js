@@ -1,5 +1,5 @@
 import * as t from 'babel-types';
-import parseArg from './parse-arg';
+import argToJS from './arg-to-js';
 
 function identifyOperation(selection, spreadsVar) {
   switch (selection.kind) {
@@ -35,7 +35,7 @@ function applyArguments(options, selection, clientVar) {
     return;
   }
 
-  options.push(parseArg(t.identifier('args'), selection.arguments, clientVar));
+  options.push(argToJS(t.identifier('args'), selection.arguments, clientVar));
 }
 
 // Returns the body of the block statement representing the selections
