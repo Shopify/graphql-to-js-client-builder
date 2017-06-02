@@ -2,7 +2,7 @@ import assert from 'assert';
 import {parse} from 'graphql/language';
 import generate from 'babel-generator';
 import * as t from 'babel-types';
-import variableDefinitionsToJS from '../src/parse-variable';
+import variableDefinitionsToJS from '../src/variable-declaration-to-js';
 
 suite('variable-declaration-to-js-test', () => {
   test('it can convert a typed variable', () => {

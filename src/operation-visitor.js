@@ -1,6 +1,6 @@
 import * as t from 'babel-types';
 import getSelections from './get-selections';
-import parseVariable from './parse-variable';
+import parseVariable from './variable-declaration-to-js';
 
 function applyName(graphQLNode, argList) {
   if (graphQLNode.name) {
