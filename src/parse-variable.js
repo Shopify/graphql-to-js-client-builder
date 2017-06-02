@@ -1,33 +1,26 @@
 import * as t from 'babel-types';
 import argValueToJS from './arg-value-to-js';
 
-function extractVariableType(variableAst) {
+function typeConstraint(variableAst) {
   switch (variableAst.kind) {
     case 'NonNullType':
-      return `${extractVariableType(variableAst.type)}!`;
+      return `${typeConstraint(variableAst.type)}!`;
     case 'ListType':
-      return `[${extractVariableType(variableAst.type)}]`;
+      return `[${typeConstraint(variableAst.type)}]`;
     default:
-      // NamedType
       return variableAst.name.value;
   }
 }
 
-function assignDefaultValue(variableConstructionArgs, variableAst, clientVar) {
+function constructJSDefinition(variableAst, clientVar) {
+  const variableConstructionArgs = [
+    t.stringLiteral(variableAst.variable.name.value),
+    t.stringLiteral(typeConstraint(variableAst.type))
+  ];
+
   if (variableAst.defaultValue) {
     variableConstructionArgs.push(argValueToJS(variableAst.defaultValue, clientVar));
   }
-}
-
-// Parses a GraphQL AST variable and returns the babel type for the variable in query builder syntax
-// variable('first', 'Int!')
-export default function parseVariable(variableAst, clientVar) {
-  const variableConstructionArgs = [
-    t.stringLiteral(variableAst.variable.name.value),
-    t.stringLiteral(extractVariableType(variableAst.type))
-  ];
-
-  assignDefaultValue(variableConstructionArgs, variableAst, clientVar);
 
   return t.callExpression(
     t.memberExpression(
@@ -36,4 +29,8 @@ export default function parseVariable(variableAst, clientVar) {
     ),
     variableConstructionArgs
   );
+}
+
+export default function variableDeclarationsToJS(definitions, clientVar) {
+  return t.arrayExpression(definitions.map((definition) => constructJSDefinition(definition, clientVar)));
 }

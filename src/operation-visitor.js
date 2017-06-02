@@ -9,22 +9,23 @@ function applyName(graphQLNode, argList) {
 }
 
 function applyVariables(graphQLNode, argList, clientVar) {
-  if (!(graphQLNode.variableDefinitions && graphQLNode.variableDefinitions.length)) {
+  const definitions = graphQLNode.variableDefinitions;
+
+  if (!(definitions && definitions.length)) {
     return;
   }
 
-  const variables = graphQLNode.variableDefinitions.map((variable) => {
-    return parseVariable(variable, clientVar);
-  });
-
-  argList.push(t.arrayExpression(variables));
+  argList.push(parseVariable(definitions, clientVar));
 }
 
 function operationFactoryFunction(graphQLNode) {
-  if (graphQLNode.operation === 'query') {
-    return 'addQuery';
-  } else {
-    return 'addMutation';
+  switch (graphQLNode.operation) {
+    case 'query':
+      return 'addQuery';
+    case 'mutation':
+      return 'addMutation';
+    default:
+      throw new Error(`Operation: "${graphQLNode.operation}" is not currently supported`);
   }
 }
 
