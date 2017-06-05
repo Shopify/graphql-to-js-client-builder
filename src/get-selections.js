@@ -55,12 +55,9 @@ export default function getSelections(selectionSet, parentSelectionName, spreads
     if (['Field', 'InlineFragment'].includes(kind) && selection.selectionSet) {
       const fieldNameOrTypeConstraint = selectionConstructionArgs[0].value;
 
-      selectionConstructionArgs.push(t.arrowFunctionExpression(
-        [t.identifier(fieldNameOrTypeConstraint)],
-        t.blockStatement(
-          getSelections(selection.selectionSet, fieldNameOrTypeConstraint, spreadsVar, clientVar)
-        )
-      ));
+      selectionConstructionArgs.push(
+        getSelections(selection.selectionSet, fieldNameOrTypeConstraint, spreadsVar, clientVar)
+      );
     }
 
     return t.expressionStatement(
@@ -74,5 +71,5 @@ export default function getSelections(selectionSet, parentSelectionName, spreads
     );
   });
 
-  return selections;
+  return t.arrowFunctionExpression([t.identifier(parentSelectionName)], t.blockStatement(selections));
 }

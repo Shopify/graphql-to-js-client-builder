@@ -38,10 +38,7 @@ export default function operationVisitor(jsNodes, clientVar, documentVar, spread
     applyVariables(node, operationDefinitionArgs, clientVar);
 
     operationDefinitionArgs.push(
-      t.arrowFunctionExpression(
-        [t.identifier(selectionRootName)],
-        t.blockStatement(getSelections(node.selectionSet, selectionRootName, spreadsVar, clientVar))
-      )
+      getSelections(node.selectionSet, selectionRootName, spreadsVar, clientVar)
     );
 
     jsNodes.push(t.expressionStatement(t.callExpression(
