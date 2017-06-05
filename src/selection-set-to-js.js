@@ -39,7 +39,7 @@ function applyArguments(options, selection, clientVar) {
 }
 
 // Returns the body of the block statement representing the selections
-export default function getSelections(selectionSet, parentSelectionName, spreadsVar, clientVar) {
+export default function selectionSetToJS(selectionSet, parentSelectionName, spreadsVar, clientVar) {
   const selections = selectionSet.selections.map((selection) => {
     const {selectionConstructionArgs, operationMethodName, kind} = identifyOperation(selection, spreadsVar);
     const fieldOptions = [];
@@ -56,7 +56,7 @@ export default function getSelections(selectionSet, parentSelectionName, spreads
       const fieldNameOrTypeConstraint = selectionConstructionArgs[0].value;
 
       selectionConstructionArgs.push(
-        getSelections(selection.selectionSet, fieldNameOrTypeConstraint, spreadsVar, clientVar)
+        selectionSetToJS(selection.selectionSet, fieldNameOrTypeConstraint, spreadsVar, clientVar)
       );
     }
 

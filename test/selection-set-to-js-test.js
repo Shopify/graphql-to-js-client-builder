@@ -2,7 +2,7 @@ import assert from 'assert';
 import {parse} from 'graphql/language';
 import generate from 'babel-generator';
 import * as t from 'babel-types';
-import selectionSetToJS from '../src/get-selections';
+import selectionSetToJS from '../src/selection-set-to-js';
 
 suite('selection-set-to-js-test', () => {
   test('it can convert fields within a selection', () => {

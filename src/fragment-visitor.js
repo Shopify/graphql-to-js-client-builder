@@ -1,5 +1,5 @@
 import * as t from 'babel-types';
-import getSelections from './get-selections';
+import selectionSetToJS from './selection-set-to-js';
 
 export default function fragmentVisitor(jsNodes, clientVar, documentVar, spreadsVar) {
   return function visitor(node) {
@@ -7,7 +7,7 @@ export default function fragmentVisitor(jsNodes, clientVar, documentVar, spreads
     const fragmentDefinitionArguments = [
       t.stringLiteral(node.name.value),
       t.stringLiteral(node.typeCondition.name.value),
-      getSelections(node.selectionSet, selectionRootName, spreadsVar, clientVar)
+      selectionSetToJS(node.selectionSet, selectionRootName, spreadsVar, clientVar)
     ];
 
     jsNodes.push(t.expressionStatement(

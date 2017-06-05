@@ -1,5 +1,5 @@
 import * as t from 'babel-types';
-import getSelections from './get-selections';
+import selectionSetToJS from './selection-set-to-js';
 import parseVariable from './variable-declaration-to-js';
 
 function applyName(graphQLNode, argList) {
@@ -38,7 +38,7 @@ export default function operationVisitor(jsNodes, clientVar, documentVar, spread
     applyVariables(node, operationDefinitionArgs, clientVar);
 
     operationDefinitionArgs.push(
-      getSelections(node.selectionSet, selectionRootName, spreadsVar, clientVar)
+      selectionSetToJS(node.selectionSet, selectionRootName, spreadsVar, clientVar)
     );
 
     jsNodes.push(t.expressionStatement(t.callExpression(
