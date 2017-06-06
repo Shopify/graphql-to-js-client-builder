@@ -26,14 +26,14 @@ suite('arg-to-js', () => {
     assert.equal(code, 'args: {\n  argOne: 1,\n  argTwo: 2.5,\n  argThree: true\n}');
   });
 
-  test('it converts hash arguments', () => {
-    const query = '{field(hash: {argOne: true})}';
+  test('it converts INPUT_OBJECT arguments', () => {
+    const query = '{field(input: {argOne: true})}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
     const jsAst = argToJS(t.identifier('args'), argumentsAst, t.identifier('client'));
 
     const code = generate(jsAst).code;
 
-    assert.equal(code, 'args: {\n  hash: {\n    argOne: true\n  }\n}');
+    assert.equal(code, 'args: {\n  input: {\n    argOne: true\n  }\n}');
   });
 
   test('it converts scalar list arguments', () => {
@@ -56,7 +56,7 @@ suite('arg-to-js', () => {
     assert.equal(code, 'args: {\n  argName: [["value-one"], [2, "value-three"]]\n}');
   });
 
-  test('it converts list of hash arguments', () => {
+  test('it converts list of INPUT_OBJECT arguments', () => {
     const query = '{field(argName: [{argOne: "value-one"}, {argTwo: 2, argThree: "value-three"}])}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
     const jsAst = argToJS(t.identifier('args'), argumentsAst, t.identifier('client'));

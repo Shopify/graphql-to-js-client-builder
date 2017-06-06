@@ -53,7 +53,7 @@ suite('arg-value-to-js', () => {
     assert.equal(generate(jsAst).code, '["one", "two", 3]');
   });
 
-  test('it can convert object values', () => {
+  test('it can convert INPUT_OBJECT values', () => {
     const query = '{field(var: {key: "value"})}';
     const valueAst = parse(query).definitions[0].selectionSet.selections[0].arguments[0].value;
     const jsAst = argValueToJS(valueAst, t.identifier('client'));
@@ -69,7 +69,7 @@ suite('arg-value-to-js', () => {
     assert.equal(generate(jsAst).code, '["one", ["two", "three"]]');
   });
 
-  test('it can convert nested object values', () => {
+  test('it can convert nested INPUT_OBJECT values', () => {
     const query = '{field(var: {key: {otherKey: true}, foo: "bar"})}';
     const valueAst = parse(query).definitions[0].selectionSet.selections[0].arguments[0].value;
     const jsAst = argValueToJS(valueAst, t.identifier('client'));
@@ -86,10 +86,10 @@ suite('arg-value-to-js', () => {
   });
 
   test('it can handle really complex queries', () => {
-    const query = '{field(var: {argOne: ["one", "two", $three, {nestedHashArgOne: true, nestedHashArgTwo: TWO}], argTwo: {one: [2.5, {three: true}]}})}';
+    const query = '{field(var: {argOne: ["one", "two", $three, {nestedArgOne: true, nestedArgTwo: TWO}], argTwo: {one: [2.5, {three: true}]}})}';
     const valueAst = parse(query).definitions[0].selectionSet.selections[0].arguments[0].value;
     const jsAst = argValueToJS(valueAst, t.identifier('client'));
 
-    assert.equal(generate(jsAst).code, '{\n  argOne: ["one", "two", client.variable("three"), {\n    nestedHashArgOne: true,\n    nestedHashArgTwo: client.enum("TWO")\n  }],\n  argTwo: {\n    one: [2.5, {\n      three: true\n    }]\n  }\n}');
+    assert.equal(generate(jsAst).code, '{\n  argOne: ["one", "two", client.variable("three"), {\n    nestedArgOne: true,\n    nestedArgTwo: client.enum("TWO")\n  }],\n  argTwo: {\n    one: [2.5, {\n      three: true\n    }]\n  }\n}');
   });
 });
