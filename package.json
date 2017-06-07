@@ -2,13 +2,15 @@
   "name": "graphql-to-js-client-query-builder",
   "version": "0.0.1",
   "description": "convert raw graphql syntax to graphql-js-client query builder javascript code",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "git@github.com:Shopify/graphql-to-js-client-query-builder.git",
   "author": "Shopify Inc.",
   "license": "MIT",
   "dependencies": {
     "babel-generator": "6.24.1",
-    "babel-types": "6.24.1"
+    "babel-types": "6.24.1",
+    "babel-generator": "6.24.1",
+    "graphql": "0.9.6"
   },
   "devDependencies": {
     "babel": "6.23.0",
@@ -23,7 +25,7 @@
   },
   "scripts": {
     "test": "yarn lint && yarn mocha",
-    "mocha": "mocha --compilers js:babel-register -u tdd $([ -n \"${CI}\" ] && echo --reporter xunit --reporter-options output=$CIRCLE_TEST_REPORTS/junit/mocha.xml) test/*",
+    "mocha": "mocha --compilers js:babel-register -u tdd $([ -n \"${CI}\" ] && echo --reporter xunit --reporter-options output=$CIRCLE_TEST_REPORTS/junit/mocha.xml) test/*-test.js",
     "prepublish": "babel -d lib/ src/",
     "lint": "eslint --max-warnings 0 -c .eslintrc.json $([ -n \"${CI}\" ] && echo -o $CIRCLE_TEST_REPORTS/junit/eslint.xml -f junit) src/ test/"
   }
