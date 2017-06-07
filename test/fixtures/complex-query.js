@@ -24,3 +24,29 @@ document.addQuery("MyQuery", root => {
     shop.addFragment(spreads.ShopFragment);
   });
 });
+document.addMutation("MyMutation", root => {
+  root.add("addProducts", {
+    args: {
+      products: [{
+        name: "a childs bicycle",
+        price: 12
+      }, {
+        name: "epoxied banana peel"
+      }]
+    }
+  }, addProducts => {
+    addProducts.add("newProducts", newProducts => {
+      newProducts.add("title");
+      newProducts.add("price");
+    });
+  });
+});
+document.addQuery("ProductQuery", [client.variable("ID", "Int!")], root => {
+  root.add("node", {
+    args: {
+      id: client.variable("ID")
+    }
+  }, node => {
+    node.addFragment(spreads.ProductFragment);
+  });
+});

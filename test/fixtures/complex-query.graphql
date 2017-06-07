@@ -18,3 +18,18 @@ fragment ShopFragment on Shop {
 fragment ProductFragment on Product {
   title
 }
+
+mutation MyMutation {
+  addProducts(products: [{name: "a childs bicycle", price: 12.0}, {name: "epoxied banana peel"}]) {
+    newProducts {
+      title
+      price
+    }
+  }
+}
+
+query ProductQuery ($ID: Int!) {
+  node(id: $ID) {
+    ...ProductFragment
+  }
+}
