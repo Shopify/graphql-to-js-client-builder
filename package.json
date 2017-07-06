@@ -2,14 +2,15 @@
   "name": "graphql-to-js-client-query-builder",
   "version": "0.0.1",
   "description": "convert raw graphql syntax to graphql-js-client query builder javascript code",
-  "main": "lib/index.js",
+  "main": "index.js",
+  "module": "index.es.js",
+  "jsnext:main": "index.es.js",
   "repository": "git@github.com:Shopify/graphql-to-js-client-query-builder.git",
   "author": "Shopify Inc.",
   "license": "MIT",
   "dependencies": {
     "babel-generator": "6.24.1",
     "babel-types": "6.24.1",
-    "babel-generator": "6.24.1",
     "graphql": "0.9.6"
   },
   "devDependencies": {
@@ -21,12 +22,18 @@
     "babel-register": "6.24.1",
     "eslint": "3.19.0",
     "eslint-plugin-shopify": "15.2.0",
-    "mocha": "3.3.0"
+    "mocha": "3.3.0",
+    "rollup": "0.43.0",
+    "rollup-plugin-babel": "2.7.1",
+    "rollup-plugin-commonjs": "8.0.2",
+    "rollup-plugin-multi-entry": "2.0.1",
+    "rollup-plugin-node-resolve": "3.0.0"
   },
   "scripts": {
     "test": "yarn lint && yarn mocha",
-    "mocha": "mocha --compilers js:babel-register -u tdd $([ -n \"${CI}\" ] && echo --reporter xunit --reporter-options output=$CIRCLE_TEST_REPORTS/junit/mocha.xml) test/*-test.js",
-    "prepublish": "babel -d lib/ src/",
+    "mocha": "yarn run rollup-tests && mocha -u tdd $([ -n \"${CI}\" ] && echo --reporter xunit --reporter-options output=$CIRCLE_TEST_REPORTS/junit/mocha.xml) .tmp/tests.js",
+    "rollup-tests": "rollup -c rollup-tests.config.js",
+    "prepublish": "rollup -c rollup.config.js",
     "lint": "eslint --max-warnings 0 -c .eslintrc.json $([ -n \"${CI}\" ] && echo -o $CIRCLE_TEST_REPORTS/junit/eslint.xml -f junit) src/ test/"
   }
 }
