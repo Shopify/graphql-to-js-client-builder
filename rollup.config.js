@@ -1,8 +1,16 @@
 import babel from 'rollup-plugin-babel';
+import {readFileSync} from 'fs';
+import {execSync} from 'child_process';
 
 const pkg = require('./package.json');
 
 const external = Object.keys(pkg.dependencies).concat('graphql/language');
+const revision = execSync('git rev-parse HEAD').toString().trim().slice(0, 7);
+
+const banner = `/*
+${readFileSync('./LICENSE.md')}
+Version: ${pkg.version} Commit: ${revision}
+*/`;
 
 export default {
   entry: 'src/index.js',
@@ -10,13 +18,11 @@ export default {
     babel({
       presets: [
         ['shopify/node', {modules: false}]
-      ],
-      plugins: [
-        ['add-shopify-header', {files: ['src/index.js']}]
       ]
     })
   ],
   external,
+  banner,
   targets: [
     {
       dest: pkg.main,
