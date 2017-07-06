@@ -18,9 +18,6 @@ export default {
     babel({
       presets: [
         ['shopify/node', {modules: false}]
-      ],
-      plugins: [
-        ['add-shopify-header', {files: ['src/index.js']}]
       ]
     }),
     commonJs({
