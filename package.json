@@ -1,5 +1,5 @@
 {
-  "name": "graphql-to-js-client-query-builder",
+  "name": "graphql-to-js-client-builder",
   "version": "0.0.1",
   "description": "convert raw graphql syntax to graphql-js-client query builder javascript code",
   "main": "index.js",
