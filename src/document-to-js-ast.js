@@ -8,7 +8,7 @@ function extractFragmentDefinitons(definitions) {
   return definitions.filter((definition) => definition.kind === 'FragmentDefinition');
 }
 
-function insertSpreadVar(nodes, identifier) {
+function insertObjectDeclaration(nodes, identifier) {
   nodes.push(t.variableDeclaration('const', [
     t.variableDeclarator(identifier, t.objectExpression([]))
   ]));
@@ -25,7 +25,7 @@ function declareDocument(nodes, clientVar, documentVar) {
   ]));
 }
 
-export default function documentToJSAst(graphQLAst, clientVar, documentVar, spreadsVar) {
+export default function documentToJSAst(graphQLAst, clientVar, documentVar, spreadsVar, variablesVar) {
   const jsGraphQLNodes = [];
 
   declareDocument(jsGraphQLNodes, clientVar, documentVar);
@@ -38,12 +38,13 @@ export default function documentToJSAst(graphQLAst, clientVar, documentVar, spre
   const fragmentDefinitons = extractFragmentDefinitons(sortedgraphQLAst.definitions);
 
   if (fragmentDefinitons.length) {
-    insertSpreadVar(jsGraphQLNodes, spreadsVar);
+    insertObjectDeclaration(jsGraphQLNodes, spreadsVar);
   }
+  insertObjectDeclaration(jsGraphQLNodes, variablesVar);
 
   visit(sortedgraphQLAst, {
-    FragmentDefinition: fragmentVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar),
-    OperationDefinition: operationVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar)
+    FragmentDefinition: fragmentVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar, variablesVar),
+    OperationDefinition: operationVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar, variablesVar)
   });
 
   return jsGraphQLNodes;

@@ -1,5 +1,6 @@
 const document = client.document();
 const spreads = {};
+const variables = {};
 spreads.ProductFragment = document.defineFragment("ProductFragment", "Product", root => {
   root.add("title");
 });
@@ -41,10 +42,10 @@ document.addMutation("MyMutation", root => {
     });
   });
 });
-document.addQuery("ProductQuery", [client.variable("ID", "Int!")], root => {
+document.addQuery("ProductQuery", [variables["ID"] = client.variable("ID", "Int!")], root => {
   root.add("node", {
     args: {
-      id: client.variable("ID")
+      id: variables["ID"]
     }
   }, node => {
     node.addFragment(spreads.ProductFragment);
