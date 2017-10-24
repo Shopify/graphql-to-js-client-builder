@@ -3,6 +3,7 @@ import {visit} from 'graphql/language';
 import sortDefinitions from './sort-definitions';
 import fragmentVisitor from './fragment-visitor';
 import operationVisitor from './operation-visitor';
+import declareVariables from './declare-variables';
 
 function extractFragmentDefinitons(definitions) {
   return definitions.filter((definition) => definition.kind === 'FragmentDefinition');
@@ -40,7 +41,8 @@ export default function documentToJSAst(graphQLAst, clientVar, documentVar, spre
   if (fragmentDefinitons.length) {
     insertObjectDeclaration(jsGraphQLNodes, spreadsVar);
   }
-  insertObjectDeclaration(jsGraphQLNodes, variablesVar);
+
+  jsGraphQLNodes.push(...declareVariables(graphQLAst, variablesVar));
 
   visit(sortedgraphQLAst, {
     FragmentDefinition: fragmentVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar, variablesVar),

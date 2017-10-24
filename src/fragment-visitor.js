@@ -7,7 +7,7 @@ export default function fragmentVisitor(jsNodes, clientVar, documentVar, spreads
     const fragmentDefinitionArguments = [
       t.stringLiteral(node.name.value),
       t.stringLiteral(node.typeCondition.name.value),
-      selectionSetToJS(node.selectionSet, selectionRootName, spreadsVar, clientVar, variablesVar)
+      selectionSetToJS(node.selectionSet, selectionRootName, null, spreadsVar, clientVar, variablesVar)
     ];
 
     jsNodes.push(t.expressionStatement(

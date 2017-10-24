@@ -28,8 +28,8 @@ mutation MyMutation {
   }
 }
 
-query ProductQuery ($ID: Int!) {
-  node(id: $ID) {
+query ProductQuery ($id: ID!, $flavor: FlavorType) {
+  node(id: $id, flavor: $flavor) {
     ...ProductFragment
   }
 }

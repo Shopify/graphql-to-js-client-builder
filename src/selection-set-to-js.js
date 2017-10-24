@@ -30,22 +30,22 @@ function applyAlias(options, selection) {
   }
 }
 
-function applyArguments(options, selection, clientVar, variablesVar) {
+function applyArguments(options, selection, operationName, clientVar, variablesVar) {
   if (!(selection.arguments && selection.arguments.length)) {
     return;
   }
 
-  options.push(argToJS(t.identifier('args'), selection.arguments, clientVar, variablesVar));
+  options.push(argToJS(t.identifier('args'), selection.arguments, operationName, clientVar, variablesVar));
 }
 
 // Returns the body of the block statement representing the selections
-export default function selectionSetToJS(selectionSet, parentSelectionName, spreadsVar, clientVar, variablesVar) {
+export default function selectionSetToJS(selectionSet, parentSelectionName, operationName, spreadsVar, clientVar, variablesVar) {
   const selections = selectionSet.selections.map((selection) => {
     const {selectionConstructionArgs, operationMethodName, kind} = identifyOperation(selection, spreadsVar);
     const fieldOptions = [];
 
     applyAlias(fieldOptions, selection);
-    applyArguments(fieldOptions, selection, clientVar, variablesVar);
+    applyArguments(fieldOptions, selection, operationName, clientVar, variablesVar);
 
     // Add query options (i.e. alias and arguments) to the query
     if (fieldOptions.length) {
@@ -56,7 +56,7 @@ export default function selectionSetToJS(selectionSet, parentSelectionName, spre
       const fieldNameOrTypeConstraint = selectionConstructionArgs[0].value;
 
       selectionConstructionArgs.push(
-        selectionSetToJS(selection.selectionSet, fieldNameOrTypeConstraint, spreadsVar, clientVar, variablesVar)
+        selectionSetToJS(selection.selectionSet, fieldNameOrTypeConstraint, operationName, spreadsVar, clientVar, variablesVar)
       );
     }
 
