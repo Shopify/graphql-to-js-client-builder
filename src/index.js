@@ -3,26 +3,42 @@ import * as t from 'babel-types';
 import generate from 'babel-generator';
 import documentToJSAst from './document-to-js-ast';
 
-export function transformToAst(
-  graphqlCode,
+const defaults = {
+  clientVar: 'client',
+  documentVar: 'document',
+  spreadsVar: 'spreads',
+  variablesVar: 'variables'
+};
+
+export function transformToAst(graphqlCode, {
   clientVar = 'client',
   documentVar = 'document',
   spreadsVar = 'spreads',
   variablesVar = 'variables'
-) {
+} = defaults) {
   const graphQLAst = parse(graphqlCode);
+  const vars = {
+    clientVar: t.identifier(clientVar),
+    documentVar: t.identifier(documentVar),
+    spreadsVar: t.identifier(spreadsVar),
+    variablesVar: t.identifier(variablesVar)
+  };
 
-  return documentToJSAst(
-    graphQLAst,
-    t.identifier(clientVar),
-    t.identifier(documentVar),
-    t.identifier(spreadsVar),
-    t.identifier(variablesVar)
-  );
+  return documentToJSAst(graphQLAst, vars);
 }
 
-export default function transformToCode(graphqlCode, clientVar = 'client', documentVar = 'document', spreadsVar = 'spreads') {
-  const jsAst = transformToAst(graphqlCode, clientVar, documentVar, spreadsVar);
+export default function transformToCode(graphqlCode, {
+  clientVar = 'client',
+  documentVar = 'document',
+  spreadsVar = 'spreads',
+  variablesVar = 'variables'
+} = defaults) {
+  const jsAst = transformToAst(graphqlCode, {
+    clientVar,
+    documentVar,
+    spreadsVar,
+    variablesVar
+  });
 
   return `${generate(t.program(jsAst)).code}\n`;
 }

@@ -9,7 +9,7 @@ function applyName(graphQLNode, argList) {
   }
 }
 
-function applyVariables(operationDefinition, argList, variablesVar) {
+function applyVariables(operationDefinition, argList, config) {
   const variableDefinitions = operationDefinition.variableDefinitions;
 
   if (!(variableDefinitions && variableDefinitions.length)) {
@@ -18,7 +18,7 @@ function applyVariables(operationDefinition, argList, variablesVar) {
 
   const name = operationName(operationDefinition);
 
-  argList.push(referenceVariablesInOperationDeclaration(name, variableDefinitions, variablesVar));
+  argList.push(referenceVariablesInOperationDeclaration(name, variableDefinitions, config));
 }
 
 function operationFactoryFunction(graphQLNode) {
@@ -32,23 +32,22 @@ function operationFactoryFunction(graphQLNode) {
   }
 }
 
-export default function operationVisitor(jsNodes, clientVar, documentVar, spreadsVar, variablesVar) {
+export default function operationVisitor(jsNodes, config) {
   return function visitor(node) {
 
-    // node.name.value
     const selectionRootName = 'root';
     const operationDefinitionArgs = [];
     const name = operationName(node);
 
     applyName(node, operationDefinitionArgs);
-    applyVariables(node, operationDefinitionArgs, variablesVar);
+    applyVariables(node, operationDefinitionArgs, config);
 
     operationDefinitionArgs.push(
-      selectionSetToJS(node.selectionSet, selectionRootName, name, spreadsVar, clientVar, variablesVar)
+      selectionSetToJS(node.selectionSet, selectionRootName, name, config)
     );
 
     jsNodes.push(t.expressionStatement(t.callExpression(
-      t.memberExpression(documentVar, t.identifier(operationFactoryFunction(node))),
+      t.memberExpression(config.documentVar, t.identifier(operationFactoryFunction(node))),
       operationDefinitionArgs
     )));
   };

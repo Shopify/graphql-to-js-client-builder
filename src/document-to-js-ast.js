@@ -15,7 +15,7 @@ function insertObjectDeclaration(nodes, identifier) {
   ]));
 }
 
-function declareDocument(nodes, clientVar, documentVar) {
+function declareDocument(nodes, {documentVar, clientVar}) {
   nodes.push(t.variableDeclaration('const', [
     t.variableDeclarator(documentVar,
       t.callExpression(
@@ -26,10 +26,10 @@ function declareDocument(nodes, clientVar, documentVar) {
   ]));
 }
 
-export default function documentToJSAst(graphQLAst, clientVar, documentVar, spreadsVar, variablesVar) {
+export default function documentToJSAst(graphQLAst, config) {
   const jsGraphQLNodes = [];
 
-  declareDocument(jsGraphQLNodes, clientVar, documentVar);
+  declareDocument(jsGraphQLNodes, config);
 
   const sortedgraphQLAst = Object.assign(
     {},
@@ -39,14 +39,14 @@ export default function documentToJSAst(graphQLAst, clientVar, documentVar, spre
   const fragmentDefinitons = extractFragmentDefinitons(sortedgraphQLAst.definitions);
 
   if (fragmentDefinitons.length) {
-    insertObjectDeclaration(jsGraphQLNodes, spreadsVar);
+    insertObjectDeclaration(jsGraphQLNodes, config.spreadsVar);
   }
 
-  jsGraphQLNodes.push(...declareVariables(graphQLAst, variablesVar));
+  jsGraphQLNodes.push(...declareVariables(graphQLAst, config));
 
   visit(sortedgraphQLAst, {
-    FragmentDefinition: fragmentVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar, variablesVar),
-    OperationDefinition: operationVisitor(jsGraphQLNodes, clientVar, documentVar, spreadsVar, variablesVar)
+    FragmentDefinition: fragmentVisitor(jsGraphQLNodes, config),
+    OperationDefinition: operationVisitor(jsGraphQLNodes, config)
   });
 
   return jsGraphQLNodes;

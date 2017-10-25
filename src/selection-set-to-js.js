@@ -1,7 +1,7 @@
 import * as t from 'babel-types';
 import argToJS from './arg-to-js';
 
-function identifyOperation(selection, spreadsVar) {
+function identifyOperation(selection, {spreadsVar}) {
   switch (selection.kind) {
     case 'Field':
       return {
@@ -30,22 +30,22 @@ function applyAlias(options, selection) {
   }
 }
 
-function applyArguments(options, selection, operationName, clientVar, variablesVar) {
+function applyArguments(options, selection, operationName, config) {
   if (!(selection.arguments && selection.arguments.length)) {
     return;
   }
 
-  options.push(argToJS(t.identifier('args'), selection.arguments, operationName, clientVar, variablesVar));
+  options.push(argToJS(t.identifier('args'), selection.arguments, operationName, config));
 }
 
 // Returns the body of the block statement representing the selections
-export default function selectionSetToJS(selectionSet, parentSelectionName, operationName, spreadsVar, clientVar, variablesVar) {
+export default function selectionSetToJS(selectionSet, parentSelectionName, operationName, config) {
   const selections = selectionSet.selections.map((selection) => {
-    const {selectionConstructionArgs, operationMethodName, kind} = identifyOperation(selection, spreadsVar);
+    const {selectionConstructionArgs, operationMethodName, kind} = identifyOperation(selection, config);
     const fieldOptions = [];
 
     applyAlias(fieldOptions, selection);
-    applyArguments(fieldOptions, selection, operationName, clientVar, variablesVar);
+    applyArguments(fieldOptions, selection, operationName, config);
 
     // Add query options (i.e. alias and arguments) to the query
     if (fieldOptions.length) {
@@ -56,7 +56,7 @@ export default function selectionSetToJS(selectionSet, parentSelectionName, oper
       const fieldNameOrTypeConstraint = selectionConstructionArgs[0].value;
 
       selectionConstructionArgs.push(
-        selectionSetToJS(selection.selectionSet, fieldNameOrTypeConstraint, operationName, spreadsVar, clientVar, variablesVar)
+        selectionSetToJS(selection.selectionSet, fieldNameOrTypeConstraint, operationName, config)
       );
     }
 

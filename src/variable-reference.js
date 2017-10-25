@@ -1,6 +1,6 @@
 import * as t from 'babel-types';
 
-export default function variableReference(operationName, variable, variablesVar) {
+export default function variableReference(operationName, variable, {variablesVar}) {
   return t.memberExpression(
     t.memberExpression(
       variablesVar,

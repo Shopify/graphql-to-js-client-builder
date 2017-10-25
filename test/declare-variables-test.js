@@ -5,10 +5,15 @@ import generate from 'babel-generator';
 import declareVariables from '../src/declare-variables';
 
 suite('declare-variables-test', () => {
+  const config = {
+    clientVar: t.identifier('client'),
+    variablesVar: t.identifier('variables')
+  };
+
   test('it doesn\'t declare a variabels var when the document has no variables', () => {
     const query = '{field}';
     const graphqlAst = parse(query);
-    const jsAst = declareVariables(graphqlAst, t.identifier('variables'));
+    const jsAst = declareVariables(graphqlAst, config);
 
     assert.equal(jsAst.length, 0);
   });
@@ -16,7 +21,7 @@ suite('declare-variables-test', () => {
   test('it declares variables for a single query with variables', () => {
     const query = 'query ($id: ID!) { node(id: $id) { id } }';
     const graphqlAst = parse(query);
-    const jsAst = declareVariables(graphqlAst, t.identifier('variables'));
+    const jsAst = declareVariables(graphqlAst, config);
 
     const code = generate(t.program(jsAst)).code;
 
@@ -32,7 +37,10 @@ variables.__defaultOperation__.id = client.variable("id", "ID!");
   test('it recieves custom variables vars', () => {
     const query = 'query ($id: ID!) { node(id: $id) { id } }';
     const graphqlAst = parse(query);
-    const jsAst = declareVariables(graphqlAst, t.identifier('customVariables'));
+    const jsAst = declareVariables(graphqlAst, {
+      ...config,
+      variablesVar: t.identifier('customVariables')
+    });
 
     const code = generate(t.program(jsAst)).code;
 
@@ -48,7 +56,7 @@ customVariables.__defaultOperation__.id = client.variable("id", "ID!");
   test('it namespaces variables for named operations', () => {
     const query = 'mutation MyMutation ($id: ID!) { node(id: $id) { id } }';
     const graphqlAst = parse(query);
-    const jsAst = declareVariables(graphqlAst, t.identifier('variables'));
+    const jsAst = declareVariables(graphqlAst, config);
 
     const code = generate(t.program(jsAst)).code;
 
@@ -67,7 +75,7 @@ variables.MyMutation.id = client.variable("id", "ID!");
       mutation MyMutation ($sort: InputSortKeys) { updateField(sort: $sort) { id } }
     `;
     const graphqlAst = parse(query);
-    const jsAst = declareVariables(graphqlAst, t.identifier('variables'));
+    const jsAst = declareVariables(graphqlAst, config);
 
     const code = generate(t.program(jsAst)).code;
 
