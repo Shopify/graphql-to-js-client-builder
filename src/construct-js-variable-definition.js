@@ -12,14 +12,14 @@ function typeConstraint(variableAst) {
   }
 }
 
-function constructJSDefinition(variableAst, clientVar) {
+export default function constructJSVariableDefinition(variableAst, clientVar, variablesVar) {
   const variableConstructionArgs = [
     t.stringLiteral(variableAst.variable.name.value),
     t.stringLiteral(typeConstraint(variableAst.type))
   ];
 
   if (variableAst.defaultValue) {
-    variableConstructionArgs.push(argValueToJS(variableAst.defaultValue, clientVar));
+    variableConstructionArgs.push(argValueToJS(variableAst.defaultValue, null, clientVar, variablesVar));
   }
 
   return t.callExpression(
@@ -29,8 +29,4 @@ function constructJSDefinition(variableAst, clientVar) {
     ),
     variableConstructionArgs
   );
-}
-
-export default function variableDeclarationsToJS(definitions, clientVar) {
-  return t.arrayExpression(definitions.map((definition) => constructJSDefinition(definition, clientVar)));
 }

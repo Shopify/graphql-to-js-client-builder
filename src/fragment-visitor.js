@@ -1,13 +1,13 @@
 import * as t from 'babel-types';
 import selectionSetToJS from './selection-set-to-js';
 
-export default function fragmentVisitor(jsNodes, clientVar, documentVar, spreadsVar) {
+export default function fragmentVisitor(jsNodes, clientVar, documentVar, spreadsVar, variablesVar) {
   return function visitor(node) {
     const selectionRootName = 'root';
     const fragmentDefinitionArguments = [
       t.stringLiteral(node.name.value),
       t.stringLiteral(node.typeCondition.name.value),
-      selectionSetToJS(node.selectionSet, selectionRootName, spreadsVar, clientVar)
+      selectionSetToJS(node.selectionSet, selectionRootName, null, spreadsVar, clientVar, variablesVar)
     ];
 
     jsNodes.push(t.expressionStatement(

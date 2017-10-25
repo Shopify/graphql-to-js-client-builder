@@ -1,5 +1,9 @@
 const document = client.document();
 const spreads = {};
+const variables = {};
+variables.ProductQuery = {};
+variables.ProductQuery.id = client.variable("id", "ID!");
+variables.ProductQuery.flavor = client.variable("flavor", "FlavorType");
 spreads.ProductFragment = document.defineFragment("ProductFragment", "Product", root => {
   root.add("title");
 });
@@ -41,10 +45,11 @@ document.addMutation("MyMutation", root => {
     });
   });
 });
-document.addQuery("ProductQuery", [client.variable("ID", "Int!")], root => {
+document.addQuery("ProductQuery", [variables.ProductQuery.id, variables.ProductQuery.flavor], root => {
   root.add("node", {
     args: {
-      id: client.variable("ID")
+      id: variables.ProductQuery.id,
+      flavor: variables.ProductQuery.flavor
     }
   }, node => {
     node.addFragment(spreads.ProductFragment);
