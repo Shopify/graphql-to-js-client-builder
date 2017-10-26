@@ -5,13 +5,17 @@ import * as t from 'babel-types';
 import referenceVariablesInOperationDeclaration from '../src/reference-variables-in-operation-declaration';
 
 suite('reference-variables-in-operation-declaration-test', () => {
+  const config = {
+    variablesVar: t.identifier('variables')
+  };
+
   test('it can handle a single variable', () => {
     const query = 'query ($var: Int) {field}';
     const variableAsts = parse(query).definitions[0].variableDefinitions;
     const jsAst = referenceVariablesInOperationDeclaration(
       '__defaultOperation__',
       variableAsts,
-      t.identifier('variables')
+      config
     );
 
     const code = generate(jsAst).code;
@@ -25,7 +29,7 @@ suite('reference-variables-in-operation-declaration-test', () => {
     const jsAst = referenceVariablesInOperationDeclaration(
       '__defaultOperation__',
       variableAsts,
-      t.identifier('variables')
+      config
     );
 
     const code = generate(jsAst).code;
@@ -39,7 +43,7 @@ suite('reference-variables-in-operation-declaration-test', () => {
     const jsAst = referenceVariablesInOperationDeclaration(
       'MyGloriousMutation',
       variableAsts,
-      t.identifier('variables')
+      config
     );
 
     const code = generate(jsAst).code;

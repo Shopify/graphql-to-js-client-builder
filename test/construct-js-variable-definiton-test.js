@@ -5,10 +5,15 @@ import * as t from 'babel-types';
 import constructJSVariableDefinition from '../src/construct-js-variable-definition';
 
 suite('construct-js-variable-definition-test', () => {
+  const config = {
+    clientVar: t.identifier('client'),
+    variablesVar: t.identifier('variables')
+  };
+
   test('it can convert a typed variable', () => {
     const query = 'query ($var: Int) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -18,7 +23,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a typed variable with a default', () => {
     const query = 'query ($var: Boolean = true) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -28,7 +33,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a non-null typed variable', () => {
     const query = 'query ($var: Int!) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -38,7 +43,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a non-null typed variable with a default', () => {
     const query = 'query ($var: String! = "beans") {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -48,7 +53,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a list type variable', () => {
     const query = 'query ($var: [Things]) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -58,7 +63,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a list type variable with a default', () => {
     const query = 'query ($var: [Things] = [{stuff: true}]) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -68,7 +73,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a list type variable with non-null elements', () => {
     const query = 'query ($var: [AnEnumType!]) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -78,7 +83,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a list type variable with non-null elements with a default', () => {
     const query = 'query ($var: [AnEnumType!] = [BEANS]) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -88,7 +93,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a non-null list type variable with non-null elements', () => {
     const query = 'query ($var: [SomeOtherType!]!) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 
@@ -98,7 +103,7 @@ suite('construct-js-variable-definition-test', () => {
   test('it can convert a non-null list type variable with non-null elements with a default', () => {
     const query = 'query ($var: [SomeOtherType!]! = [{foo: {bar: "baz"}}]) {field}';
     const variableAst = parse(query).definitions[0].variableDefinitions[0];
-    const jsAst = constructJSVariableDefinition(variableAst, t.identifier('client'), t.identifier('variables'));
+    const jsAst = constructJSVariableDefinition(variableAst, config);
 
     const code = generate(jsAst).code;
 

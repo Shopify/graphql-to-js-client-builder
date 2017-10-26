@@ -5,12 +5,16 @@ import * as t from 'babel-types';
 import selectionSetToJS from '../src/selection-set-to-js';
 
 suite('selection-set-to-js-test', () => {
-  const varArgs = [t.identifier('spreads'), t.identifier('client'), t.identifier('variables')];
+  const config = {
+    spreadsVar: t.identifier('spreads'),
+    clientVar: t.identifier('client'),
+    variablesVar: t.identifier('variables')
+  };
 
   test('it can convert fields within a selection', () => {
     const query = '{fieldOne fieldTwo}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
-    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', ...varArgs);
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -20,7 +24,7 @@ suite('selection-set-to-js-test', () => {
   test('it can convert named fragments within a selection', () => {
     const query = '{...MyFragment}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
-    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', ...varArgs);
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -30,7 +34,7 @@ suite('selection-set-to-js-test', () => {
   test('it can convert aliased fields within a selection', () => {
     const query = '{fieldOne fieldTwo: fieldThree}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
-    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', ...varArgs);
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -40,7 +44,7 @@ suite('selection-set-to-js-test', () => {
   test('it can convert fields with arguments within a selection', () => {
     const query = '{fieldOne(fancy: true)}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
-    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', ...varArgs);
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -50,7 +54,7 @@ suite('selection-set-to-js-test', () => {
   test('it can convert fields with selections within a selection', () => {
     const query = '{fieldOne {nestedFieldOne nestedFieldTwo}}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
-    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', ...varArgs);
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -60,7 +64,7 @@ suite('selection-set-to-js-test', () => {
   test('it can convert fields with arguments and selections within a selection', () => {
     const query = '{fieldOne(extraFancy: $FancinessQuotient) {nestedFieldOne nestedFieldTwo}}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
-    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', ...varArgs);
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -70,7 +74,7 @@ suite('selection-set-to-js-test', () => {
   test('it can convert inline fragments within a selection', () => {
     const query = '{... on TheThing {fieldOne, fieldTwo}}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
-    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', ...varArgs);
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 

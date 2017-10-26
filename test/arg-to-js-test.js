@@ -5,11 +5,15 @@ import * as t from 'babel-types';
 import argToJS from '../src/arg-to-js';
 
 suite('arg-to-js', () => {
+  const config = {
+    clientVar: t.identifier('client'),
+    variablesVar: t.identifier('variables')
+  };
 
   test('it converts scalar arguments', () => {
     const query = '{field(argName: "value")}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -19,7 +23,7 @@ suite('arg-to-js', () => {
   test('it converts multiple arguments', () => {
     const query = '{field(argOne: 1, argTwo: 2.5, argThree: true)}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -29,7 +33,7 @@ suite('arg-to-js', () => {
   test('it converts INPUT_OBJECT arguments', () => {
     const query = '{field(input: {argOne: true})}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -39,7 +43,7 @@ suite('arg-to-js', () => {
   test('it converts scalar list arguments', () => {
     const query = '{field(argName: ["value-one", 2, "value-three"])}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -49,7 +53,7 @@ suite('arg-to-js', () => {
   test('it converts list of list arguments', () => {
     const query = '{field(argName: [["value-one"], [2, "value-three"]])}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -59,7 +63,7 @@ suite('arg-to-js', () => {
   test('it converts list of INPUT_OBJECT arguments', () => {
     const query = '{field(argName: [{argOne: "value-one"}, {argTwo: 2, argThree: "value-three"}])}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -69,7 +73,7 @@ suite('arg-to-js', () => {
   test('it converts variables to client variables', () => {
     const query = '{field(argName: $value)}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 
@@ -79,7 +83,7 @@ suite('arg-to-js', () => {
   test('it converts variables nested in arguments to client variables', () => {
     const query = '{field(argName: $value)}';
     const argumentsAst = parse(query).definitions[0].selectionSet.selections[0].arguments;
-    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', t.identifier('client'), t.identifier('variables'));
+    const jsAst = argToJS(t.identifier('args'), argumentsAst, '__defaultOperation__', config);
 
     const code = generate(jsAst).code;
 

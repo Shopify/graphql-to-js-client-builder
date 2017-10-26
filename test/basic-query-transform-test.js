@@ -16,7 +16,10 @@ suite('basic-query-transform-test', () => {
     const query = getFixture('basic-query.graphql');
     const expectedBuilderCode = getFixture('basic-query-with-custom-var.js');
 
-    const builderCode = transform(query, 'fancyClient', 'someOtherDocument');
+    const builderCode = transform(query, {
+      clientVar: 'fancyClient',
+      documentVar: 'someOtherDocument'
+    });
 
     assert.equal(builderCode, expectedBuilderCode);
   });

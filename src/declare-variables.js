@@ -13,13 +13,13 @@ function nameFromOperation(operationDefinition) {
   return operationDefinition.name ? operationDefinition.name.value : '__defaultOperation__';
 }
 
-function variablesDeclaration(variablesVar) {
+function variablesDeclaration({variablesVar}) {
   return t.variableDeclaration('const', [
     t.variableDeclarator(variablesVar, t.objectExpression([]))
   ]);
 }
 
-function variablesHashForOperationDeclaration(variablesVar, operationName) {
+function variablesHashForOperationDeclaration(operationName, {variablesVar}) {
   return t.expressionStatement(
     t.assignmentExpression(
       '=',
@@ -32,23 +32,23 @@ function variablesHashForOperationDeclaration(variablesVar, operationName) {
   );
 }
 
-function declareVariableForOperation(variablesVar, operationName, variableAst) {
+function declareVariableForOperation(operationName, variableAst, config) {
   return t.expressionStatement(
     t.assignmentExpression(
       '=',
       t.memberExpression(
         t.memberExpression(
-          variablesVar,
+          config.variablesVar,
           t.identifier(operationName)
         ),
         t.identifier(variableAst.variable.name.value)
       ),
-      constructJSVariableDefinition(variableAst, t.identifier('client'), variablesVar)
+      constructJSVariableDefinition(variableAst, config)
     )
   );
 }
 
-export default function declareVariables(graphqlAst, variablesVar) {
+export default function declareVariables(graphqlAst, config) {
   const operationsWithVariables = graphqlAst
     .definitions
     .filter(isOperationDefinition)
@@ -59,17 +59,17 @@ export default function declareVariables(graphqlAst, variablesVar) {
   }
 
   return [
-    variablesDeclaration(variablesVar),
+    variablesDeclaration(config),
     ...(
       operationsWithVariables
         .map((operationDefinition) => {
           const operationName = nameFromOperation(operationDefinition);
 
           return [
-            variablesHashForOperationDeclaration(variablesVar, operationName),
+            variablesHashForOperationDeclaration(operationName, config),
             ...(
               operationDefinition.variableDefinitions.map((variableAst) => {
-                return declareVariableForOperation(variablesVar, operationName, variableAst);
+                return declareVariableForOperation(operationName, variableAst, config);
               })
             )
           ];
