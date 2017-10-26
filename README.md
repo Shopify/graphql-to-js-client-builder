@@ -69,7 +69,12 @@ query ($id: ID!) {
       price
     }
   }
-}`, 'client', 'document', 'spreads');
+}`, {
+  clientVar: 'client',
+  documentVar: 'document',
+  spreandsVar: 'spreads',
+  variablesVar: 'variables'
+}
 ```
 
 The above code would return an AST representing the same javascript code that was shown in the previous example.
