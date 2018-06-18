@@ -30,9 +30,9 @@
   },
   "scripts": {
     "test": "yarn lint && yarn mocha",
-    "mocha": "yarn run rollup-tests && mocha -u tdd $([ -n \"${CI}\" ] && echo --reporter xunit --reporter-options output=$CIRCLE_TEST_REPORTS/junit/mocha.xml) .tmp/tests.js",
+    "mocha": "yarn run rollup-tests && mocha -u tdd .tmp/tests.js",
     "rollup-tests": "rollup -c rollup-tests.config.js",
     "prepublish": "rollup -c rollup.config.js",
-    "lint": "eslint --max-warnings 0 -c .eslintrc.json $([ -n \"${CI}\" ] && echo -o $CIRCLE_TEST_REPORTS/junit/eslint.xml -f junit) src/ test/"
+    "lint": "eslint --max-warnings 0 -c .eslintrc.json src/ test/"
   }
 }
