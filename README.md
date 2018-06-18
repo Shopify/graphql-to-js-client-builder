@@ -1,3 +1,4 @@
+[![Travis](https://travis-ci.com/Shopify/graphql-to-js-client-builder.svg?branch=master)](https://travis-ci.com/Shopify/graphql-to-js-client-builder)
 # graphql-to-js-client-builder
 
 This is a generic function that will take in a GraphQL AST, and produce a javascript AST or code representing the query builder syntax used by [graphql-js-client](https://github.com/Shopify/graphql-js-client).
