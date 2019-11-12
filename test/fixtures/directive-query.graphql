@@ -1,0 +1,19 @@
+
+fragment VariantFragment on Variant {
+  title
+}
+query ProductQuery ($id: ID!, $flavor: FlavorType, $includeId: Boolean = true, $skipVariants: Boolean = false, $dateFormat: String = "YYYY-MM-DD") {
+  product(id: $id, flavor: $flavor) {
+    id @include(if: $includeId) @format(as: "gid") @upper
+    title @lower
+    price
+    variants (first: 20) @skip(if: $skipVariants) {
+      edges {
+        node {
+          ...VariantFragment
+        }
+      }
+    }
+    createdAt @format(as: $dateFormat)
+  }
+}
