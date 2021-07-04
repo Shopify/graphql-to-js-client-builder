@@ -51,6 +51,27 @@ suite('selection-set-to-js-test', () => {
     assert.equal(code, 'root => {\n  root.add("fieldOne", {\n    args: {\n      fancy: true\n    }\n  });\n}');
   });
 
+
+  test('it can convert fields with directives within a selection', () => {
+    const query = '{fieldOne @include(if: true)}';
+    const selectionSetAst = parse(query).definitions[0].selectionSet;
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
+
+    const code = generate(jsAst).code;
+
+    assert.equal(code, 'root => {\n  root.add("fieldOne", {\n    directives: {\n      include: {\n        if: true\n      }\n    }\n  });\n}');
+  });
+
+  test('it can convert fields with arguments and directives within a selection', () => {
+    const query = '{fieldOne(fancy: true) @format(as: $fieldOneFormat)}';
+    const selectionSetAst = parse(query).definitions[0].selectionSet;
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
+
+    const code = generate(jsAst).code;
+
+    assert.equal(code, 'root => {\n  root.add("fieldOne", {\n    args: {\n      fancy: true\n    },\n    directives: {\n      format: {\n        as: variables.__defaultOperation__.fieldOneFormat\n      }\n    }\n  });\n}');
+  });
+
   test('it can convert fields with selections within a selection', () => {
     const query = '{fieldOne {nestedFieldOne nestedFieldTwo}}';
     const selectionSetAst = parse(query).definitions[0].selectionSet;
@@ -69,6 +90,26 @@ suite('selection-set-to-js-test', () => {
     const code = generate(jsAst).code;
 
     assert.equal(code, 'root => {\n  root.add("fieldOne", {\n    args: {\n      extraFancy: variables.__defaultOperation__.FancinessQuotient\n    }\n  }, fieldOne => {\n    fieldOne.add("nestedFieldOne");\n    fieldOne.add("nestedFieldTwo");\n  });\n}');
+  });
+
+  test('it can convert fields with directives and selections within a selection', () => {
+    const query = '{fieldOne @include(if: $includeFieldOne) {nestedFieldOne nestedFieldTwo}}';
+    const selectionSetAst = parse(query).definitions[0].selectionSet;
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
+
+    const code = generate(jsAst).code;
+
+    assert.equal(code, 'root => {\n  root.add("fieldOne", {\n    directives: {\n      include: {\n        if: variables.__defaultOperation__.includeFieldOne\n      }\n    }\n  }, fieldOne => {\n    fieldOne.add("nestedFieldOne");\n    fieldOne.add("nestedFieldTwo");\n  });\n}');
+  });
+
+  test('it can convert fields and selections with directives within a selection', () => {
+    const query = '{fieldOne {nestedFieldOne @skip(if: true)}}';
+    const selectionSetAst = parse(query).definitions[0].selectionSet;
+    const jsAst = selectionSetToJS(selectionSetAst, 'root', '__defaultOperation__', config);
+
+    const code = generate(jsAst).code;
+
+    assert.equal(code, 'root => {\n  root.add("fieldOne", fieldOne => {\n    fieldOne.add("nestedFieldOne", {\n      directives: {\n        skip: {\n          if: true\n        }\n      }\n    });\n  });\n}');
   });
 
   test('it can convert inline fragments within a selection', () => {
