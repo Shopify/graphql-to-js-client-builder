@@ -1,5 +1,6 @@
 import * as t from 'babel-types';
 import argToJS from './arg-to-js';
+import directiveToJS from './directive-to-js';
 
 function identifyOperation(selection, {spreadsVar}) {
   switch (selection.kind) {
@@ -38,6 +39,14 @@ function applyArguments(options, selection, operationName, config) {
   options.push(argToJS(t.identifier('args'), selection.arguments, operationName, config));
 }
 
+function applyDirectives(options, selection, operationName, config) {
+  if (!(selection.directives && selection.directives.length)) {
+    return;
+  }
+
+  options.push(directiveToJS(t.identifier('directives'), selection.directives, operationName, config));
+}
+
 // Returns the body of the block statement representing the selections
 export default function selectionSetToJS(selectionSet, parentSelectionName, operationName, config) {
   const selections = selectionSet.selections.map((selection) => {
@@ -46,6 +55,7 @@ export default function selectionSetToJS(selectionSet, parentSelectionName, oper
 
     applyAlias(fieldOptions, selection);
     applyArguments(fieldOptions, selection, operationName, config);
+    applyDirectives(fieldOptions, selection, operationName, config);
 
     // Add query options (i.e. alias and arguments) to the query
     if (fieldOptions.length) {
